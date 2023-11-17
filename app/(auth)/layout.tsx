@@ -1,16 +1,16 @@
 import React from "react";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import AuthNavbar from "./_components/navbar";
 
 async function AuthLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
 
-  if (session) {
-    return redirect("/organisation");
-  }
-
   return (
-    <div className="h-full flex justify-center items-center">{children}</div>
+    <div className="h-full flex flex-col justify-center items-center">
+      <AuthNavbar />
+      {children}
+    </div>
   );
 }
 

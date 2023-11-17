@@ -41,14 +41,15 @@ model Session {
 }
 
 model User {
-  id                 String         @id @default(cuid())
-  name               String?
-  email              String?        @unique
-  emailVerified      DateTime?      @map("email_verified")
-  image              String?
-  accounts           Account[]
-  sessions           Session[]
-  OwnedOrganisations Organisation[] // Updated relationship
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  Table Table[]
 
   @@map("users")
 }
@@ -62,12 +63,22 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
-// organisation for user
-model Organisation {
-  id      String @unique @default(cuid())
-  name    String
-  ownerId String
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+model Table {
+  id     String @id @default(cuid())
+  name   String
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cards  Card[]
 
-  @@map("organisations")
+  @@index([userId])
+}
+
+model Card {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  tableId     String
+  table       Table   @relation(fields: [tableId], references: [id], onDelete: Cascade)
+
+  @@index([tableId])
 }
