@@ -3,6 +3,7 @@
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { cn } from "@/lib/utils";
+import { DragHandleDots2Icon } from "@radix-ui/react-icons";
 
 export function Draggable({
   id,
@@ -25,12 +26,13 @@ export function Draggable({
   return (
     <div
       ref={setNodeRef}
-      className={cn(className)}
+      className={cn(`flex items-center justify-between gap-2`, className)}
       style={style}
-      {...listeners}
-      {...attributes}
     >
       {children}
+      <button {...listeners} {...attributes} className="cursor-move">
+        <DragHandleDots2Icon />
+      </button>
     </div>
   );
 }

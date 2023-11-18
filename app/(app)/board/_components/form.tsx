@@ -18,7 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-export function TableForm() {
+export function TableForm({ boardId }: { boardId: string }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const formRef = useRef<ElementRef<"form">>(null);
@@ -56,6 +56,15 @@ export function TableForm() {
         ref={formRef}
         className="flex gap-2 shrink-0 w-72 h-fit bg-slate-100 p-2 rounded-md border"
       >
+        <input
+          type="text"
+          name="boardId"
+          id="boardId"
+          value={boardId}
+          hidden
+          readOnly
+          className=""
+        />
         <Input
           type="text"
           ref={inputRef}

@@ -1,61 +1,69 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
-import { ActionState, FieldErrors } from "@/lib/create-safe-action";
+type ServerFunction<Result> = (...args: any[]) => Promise<Result>;
 
-type Action<TInput, TOutput> = (data: TInput) => Promise<ActionState<TInput, TOutput>>;
+interface UseServerFunctionProps<Result> {
+  onSuccess?: (result: Result) => void;
+  onError?: (error: Error) => void;
+}
 
-interface UseActionOptions<TOutput> {
-  onSuccess?: (data: TOutput) => void;
-  onError?: (error: string) => void;
-  onComplete?: () => void;
-};
+interface UseServerFunction<Result> extends UseServerFunctionProps<Result> {
+  executeServerFunction: (...args: any[]) => Promise<void>;
+  isLoading: boolean;
+  error: Error | null;
+}
 
-export const useAction = <TInput, TOutput> (
-  action: Action<TInput, TOutput>,
-  options: UseActionOptions<TOutput> = {}
-) => {
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors<TInput> | undefined>(
-    undefined
-  );
-  const [error, setError] = useState<string | undefined>(undefined);
-  const [data, setData] = useState<TOutput | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+const useServerFunction = <Result>(
+  serverFunction: ServerFunction<Result>,
+  { onSuccess, onError }: UseServerFunctionProps<Result> = {}
+): UseServerFunction<Result> => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const abortController = new AbortController();
 
-  const execute = useCallback(
-    async (input: TInput) => {
-      setIsLoading(true);
+  useEffect(() => {
+    return () => {
+      // Cleanup: Cancel the request if the component unmounts
+      abortController.abort();
+    };
+  }, [abortController]);
 
+  const executeServerFunction = useCallback(
+    async (...args: any[]) => {
       try {
-        const result = await action(input);
+        setIsLoading(true);
+        setError(null);
 
-        if (!result) {
-          return;
+        const result = await serverFunction(...args, {
+          signal: abortController.signal,
+        });
+
+        if (onSuccess) {
+          onSuccess(result);
         }
+      } catch (err: Error | any) {
+        // Ignore the error if the request was aborted
+        if (err.name !== "AbortError") {
+          setError(err);
 
-        setFieldErrors(result.fieldErrors);
-
-        if (result.error) {
-          setError(result.error);
-          options.onError?.(result.error);
-        }
-
-        if (result.data) {
-          setData(result.data);
-          options.onSuccess?.(result.data);
+          if (onError) {
+            onError(err);
+          }
         }
       } finally {
         setIsLoading(false);
-        options.onComplete?.();
       }
     },
-    [action, options]
+    [serverFunction, onSuccess, onError, abortController]
   );
 
   return {
-    execute,
-    fieldErrors,
-    error,
-    data,
+    executeServerFunction,
     isLoading,
+    error,
+    onSuccess,
+    onError,
   };
 };
+
+export default useServerFunction;

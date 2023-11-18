@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Toast,
@@ -7,11 +7,14 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "@/components/ui/toast"
-import { useToast } from "@/components/ui/use-toast"
+} from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
+import { ElementRef, useRef } from "react";
 
 export function Toaster() {
-  const { toasts } = useToast()
+  const { toasts } = useToast();
+
+  const tcloseRef = useRef<ElementRef<"button">>(null);
 
   return (
     <ToastProvider>
@@ -25,11 +28,11 @@ export function Toaster() {
               )}
             </div>
             {action}
-            <ToastClose />
+            <ToastClose ref={tcloseRef} />
           </Toast>
-        )
+        );
       })}
       <ToastViewport />
     </ToastProvider>
-  )
+  );
 }

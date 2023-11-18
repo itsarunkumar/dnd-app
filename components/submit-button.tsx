@@ -10,8 +10,10 @@ export function SubmitButton({ children, className, ...args }: ButtonProps) {
   const state = useFormStatus();
 
   return (
-    <Button {...args} className={cn(` ${className}`)}>
-      {state.pending ? <SymbolIcon className="animate-spin" /> : children}
+    <Button disabled={state.pending} {...args} className={cn(` ${className}`)}>
+      {/* {state.pending ? <SymbolIcon className="animate-spin" /> : children} */}
+      {children}
+      {state.pending && <SymbolIcon className="animate-spin" />}
     </Button>
   );
 }

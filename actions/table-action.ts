@@ -14,13 +14,18 @@ export async function createTable(data: FormData) {
           email: session?.user?.email as string,
         },
       },
+      board: {
+        connect: {
+          id: data.get("boardId") as string,
+        },
+      },
     },
   });
 
   revalidatePath("/app");
 }
 
-export async function getTables() {
+export async function getTables(boardId: string) {
   const session = await auth();
 
   return await prisma.table.findMany({
@@ -28,6 +33,7 @@ export async function getTables() {
       user: {
         email: session?.user?.email as string,
       },
+      boardId: boardId,
     },
     include: {
       cards: true,
@@ -35,7 +41,15 @@ export async function getTables() {
   });
 }
 
-export async function deleteTable() {}
+export async function deleteTable(tableId: string) {
+  await prisma.table.delete({
+    where: {
+      id: tableId,
+    },
+  });
+
+  revalidatePath("/app");
+}
 
 export async function createCard(data: FormData) {
   const session = await auth();
@@ -63,4 +77,25 @@ export async function updateCard(cardId: string, tableId: string) {
   revalidatePath("/app");
 }
 
-export async function deleteCard() {}
+export async function updateCardData(data: FormData) {
+  await prisma.card.update({
+    where: {
+      id: data.get("cardId") as string,
+    },
+    data: {
+      name: data.get("card") as string,
+      description: data.get("description") as string,
+    },
+  });
+
+  revalidatePath("/board");
+}
+
+export async function deleteCard(cardID: string, tableId: string) {
+  await prisma.card.delete({
+    where: {
+      id: cardID,
+      tableId: tableId,
+    },
+  });
+}

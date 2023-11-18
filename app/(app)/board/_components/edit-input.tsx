@@ -1,5 +1,5 @@
-import { Button, ButtonProps as BtnProps } from "@/components/ui/button";
-import { Input, InputProps as InpProps } from "@/components/ui/input";
+"use client";
+
 import React, {
   useRef,
   useState,
@@ -9,6 +9,13 @@ import React, {
 } from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 
+import { Button, ButtonProps as BtnProps } from "@/components/ui/button";
+import { Input, InputProps as InpProps } from "@/components/ui/input";
+import {
+  Textarea,
+  TextareaProps as TextAreaProps,
+} from "@/components/ui/textarea";
+
 interface ButtonProps extends BtnProps {
   text?: string;
 }
@@ -17,9 +24,15 @@ interface InputProps extends InpProps {
   placeholder?: string;
 }
 
+interface TextareaProps extends TextAreaProps {
+  value?: string;
+}
+
 interface EditInputProps {
-  buttonProps: ButtonProps;
-  inputProps: InputProps;
+  buttonProps?: ButtonProps;
+  inputProps?: InputProps;
+  textareaProps?: TextareaProps;
+  useTextarea?: boolean;
 }
 
 interface EditInputState {
@@ -30,7 +43,7 @@ interface EditInputState {
 
 export function useEditInput(): [React.FC<EditInputProps>, EditInputState] {
   const [isEditing, setIsEditing] = useState(false);
-  const formRef = useRef<ElementRef<"input">>(null);
+  const formRef = useRef(null);
 
   const enableEditing = useCallback(() => {
     setIsEditing(true);
@@ -55,14 +68,18 @@ export function useEditInput(): [React.FC<EditInputProps>, EditInputState] {
   const EditInputComponent: React.FC<EditInputProps> = useMemo(
     () =>
       // eslint-disable-next-line react/display-name
-      ({ buttonProps, inputProps }) => {
+      ({ buttonProps, inputProps, textareaProps, useTextarea = false }) => {
         if (isEditing) {
+          if (useTextarea) {
+            return <Textarea ref={formRef} {...textareaProps} />;
+          }
+
           return <Input ref={formRef} {...inputProps} />;
         }
 
         return (
           <Button onClick={enableEditing} {...buttonProps}>
-            {buttonProps.text || "Add List"}
+            {buttonProps?.text || "Add List"}
           </Button>
         );
       },

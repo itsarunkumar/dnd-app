@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 import {
   DndContext,
   DragEndEvent,
@@ -26,6 +27,7 @@ import { FormCard, TableForm } from "./form";
 import { updateCard } from "@/actions/table-action";
 
 import { CardItem } from "./card-item";
+import { ListOptions } from "./list-options";
 
 // correctly type the props
 type DNDProps = {
@@ -33,6 +35,7 @@ type DNDProps = {
     id: string;
     name: string;
     userId: string;
+    boardId: string;
     cards: Card[];
   }[];
 };
@@ -40,6 +43,8 @@ type DNDProps = {
 export default function DND({ containers }: DNDProps) {
   const [containersState, setContainersState] = useState([...containers]);
   const [active, setActive] = useState(null);
+
+  const params = useParams();
 
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
@@ -73,16 +78,12 @@ export default function DND({ containers }: DNDProps) {
         <Droppable
           key={container.id}
           id={container.id}
-          className="w-[272px] h-full space-y-3 bg-slate-100 px-5 py-3 rounded-md shrink-0 select-none"
+          className="w-80 h-full space-y-3  px-5 rounded-md shrink-0 select-none"
         >
           {/* Content inside Droppable */}
           <div className="capitalize w-full p-2 border rounded-md shadow-sm flex items-center justify-between bg-slate-800 text-slate-50 mb-2">
             {container.name}
-            <FormCard
-              table={container.id}
-              key={container.id}
-              className="px-4"
-            />
+            <ListOptions table={container} />
           </div>
 
           {container.cards?.map((card) => (
@@ -90,7 +91,7 @@ export default function DND({ containers }: DNDProps) {
               <Draggable
                 key={card.id}
                 id={card.id}
-                className="bg-slate-100 w-full px-4 py-2 text-slate-900 border border-slate-600 border-opacity-20 shadow-md rounded-md my-1"
+                className="bg-slate-100  px-4 py-4 text-slate-900 border border-slate-600 border-opacity-20 shadow-md rounded-md my-1"
               >
                 <CardItem card={card} />
               </Draggable>
@@ -115,7 +116,7 @@ export default function DND({ containers }: DNDProps) {
       </DragOverlay>
 
       {/* to add a new table or list */}
-      <TableForm />
+      <TableForm boardId={params.boardId as string} />
     </DndContext>
   );
 
