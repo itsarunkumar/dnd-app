@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 
 type ServerFunction<Result> = (...args: any[]) => Promise<Result>;
 
@@ -19,14 +19,6 @@ const useServerFunction = <Result>(
 ): UseServerFunction<Result> => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const abortController = new AbortController();
-
-  useEffect(() => {
-    return () => {
-      // Cleanup: Cancel the request if the component unmounts
-      abortController.abort();
-    };
-  }, [abortController]);
 
   const executeServerFunction = useCallback(
     async (...args: any[]) => {
@@ -34,9 +26,7 @@ const useServerFunction = <Result>(
         setIsLoading(true);
         setError(null);
 
-        const result = await serverFunction(...args, {
-          signal: abortController.signal,
-        });
+        const result = await serverFunction(...args);
 
         if (onSuccess) {
           onSuccess(result);
@@ -54,7 +44,7 @@ const useServerFunction = <Result>(
         setIsLoading(false);
       }
     },
-    [serverFunction, onSuccess, onError, abortController]
+    [serverFunction, onSuccess, onError]
   );
 
   return {

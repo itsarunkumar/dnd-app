@@ -20,14 +20,20 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Cross2Icon } from "@radix-ui/react-icons";
 
+import useServerFunction from "@/hooks/use-action";
+
 export default function BoardCreate({ className }: { className?: string }) {
   const dref = useRef<ElementRef<"button">>(null);
 
-  function onSubmit(data: FormData) {
-    createBoard(data);
-    if (dref.current) {
-      dref.current.click();
-    }
+  const { executeServerFunction } = useServerFunction(createBoard, {
+    onSuccess: () => {
+      dref.current?.click();
+    },
+  });
+
+  async function onSubmit(data: FormData) {
+    const boardId = data.get("board") as string;
+    executeServerFunction(boardId);
   }
 
   return (

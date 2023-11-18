@@ -18,6 +18,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
+import useServerFunction from "@/hooks/use-action";
+import { object } from "zod";
+
 export function TableForm({ boardId }: { boardId: string }) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -104,9 +107,22 @@ export function FormCard({
 }) {
   const btnRef = useRef<ElementRef<"button">>(null);
 
+  const { executeServerFunction } = useServerFunction(createCard, {
+    onSuccess: () => {
+      btnRef.current?.click();
+    },
+  });
+
   function onSubmit(data: FormData) {
-    createCard(data);
-    btnRef.current?.click();
+    const { card, description, tableId } = Object.fromEntries(data);
+
+    console.log(card, description, tableId);
+
+    executeServerFunction({
+      name: card,
+      description,
+      tableId,
+    });
   }
 
   return (

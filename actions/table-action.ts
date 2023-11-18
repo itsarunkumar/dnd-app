@@ -51,13 +51,22 @@ export async function deleteTable(tableId: string) {
   revalidatePath("/app");
 }
 
-export async function createCard(data: FormData) {
-  const session = await auth();
+type createCardData = {
+  name: string;
+  description: string;
+  tableId: string;
+};
+
+export async function createCard({
+  name,
+  description,
+  tableId,
+}: createCardData) {
   await prisma.card.create({
     data: {
-      name: data.get("card") as string,
-      description: data.get("description") as string,
-      tableId: data.get("tableId") as string,
+      name: name,
+      description: description,
+      tableId: tableId,
     },
   });
 
