@@ -36,6 +36,8 @@ type DNDProps = {
     name: string;
     userId: string;
     boardId: string;
+    updatedAt: Date;
+    createdAt: Date;
     cards: Card[];
   }[];
 };
