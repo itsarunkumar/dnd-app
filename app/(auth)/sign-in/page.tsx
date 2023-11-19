@@ -11,6 +11,13 @@ function SignIn() {
 
   return (
     <div className=" flex flex-col justify-center items-center gap-y-4">
+      {session.status === "authenticated" && (
+        <div className="flex flex-col gap-4 items-center">
+          <h1 className="text-2xl">{session.data?.user?.name}</h1>
+          <span className="text-sm">{session.data?.user?.email}</span>
+        </div>
+      )}
+
       {session.status === "unauthenticated" ? (
         <>
           <h1>Login to your account</h1>
@@ -34,11 +41,6 @@ function SignIn() {
           <Button onClick={() => signOut()}>Logout</Button>
         </>
       )}
-
-      <div>
-        <h1>{session.data?.user?.name}</h1>
-        <span>{session.data?.user?.email}</span>
-      </div>
     </div>
   );
 }

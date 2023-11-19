@@ -42,13 +42,15 @@ export async function getTables(boardId: string) {
 }
 
 export async function deleteTable(tableId: string) {
-  await prisma.table.delete({
+  const data = await prisma.table.delete({
     where: {
       id: tableId,
     },
   });
 
   revalidatePath("/app");
+
+  return data;
 }
 
 type createCardData = {

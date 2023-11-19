@@ -13,16 +13,15 @@ import {
   TouchSensor,
   useSensors,
 } from "@dnd-kit/core";
-
 import {
   restrictToWindowEdges,
   restrictToFirstScrollableAncestor,
 } from "@dnd-kit/modifiers";
+import { Card } from "@prisma/client";
 
 import { Droppable } from "./droppable";
 import { Draggable } from "./draggable";
 
-import { Card } from "@prisma/client";
 import { FormCard, TableForm } from "./form";
 import { updateCard } from "@/actions/table-action";
 
@@ -95,7 +94,7 @@ export default function DND({ containers }: DNDProps) {
                 id={card.id}
                 className="bg-slate-100  px-4 py-4 text-slate-900 border border-slate-600 border-opacity-20 shadow-md rounded-md my-1"
               >
-                <CardItem card={card} />
+                <CardItem card={card} tableId={container.id} />
               </Draggable>
             </>
           ))}

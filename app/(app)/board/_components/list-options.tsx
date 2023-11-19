@@ -13,14 +13,25 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { deleteTable } from "@/actions/table-action";
+import useServerFunction from "@/hooks/use-action";
+import { SubmitButton } from "@/components/submit-button";
 
 interface TableOptionsProps {
   table: Table;
 }
 
 export function ListOptions({ table }: TableOptionsProps) {
+  const { executeServerFunction } = useServerFunction(
+    deleteTable.bind(null, table.id),
+    {
+      onSuccess: (data) => {
+        console.log(data, "sucess in delete");
+      },
+    }
+  );
+
   async function deleteList() {
-    await deleteTable.bind(null, table.id)();
+    executeServerFunction();
   }
 
   return (
@@ -47,13 +58,13 @@ export function ListOptions({ table }: TableOptionsProps) {
               hidden
               readOnly
             />
-            <Button
+            <SubmitButton
               variant="ghost"
               className="flex items-center justify-start gap-2"
             >
               <Trash2 className="w-4 h-4 text-rose-500" />
               Delete
-            </Button>
+            </SubmitButton>
           </form>
         </DropdownMenuItem>
       </DropdownMenuContent>
