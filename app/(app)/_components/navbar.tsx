@@ -2,7 +2,6 @@ import Link from "next/link";
 import React from "react";
 
 import { BoardSelect } from "./board-select";
-import UserDropdown from "@/components/user-dropdown";
 
 import { allBoards } from "@/actions/board-actions/all-boards";
 
@@ -14,7 +13,6 @@ async function AppNavbar() {
       <Link href={"/app"}>DnD</Link>
       <div className="flex items-center gap-2">
         <BoardSelect boards={boards} />
-        <UserDropdown />
       </div>
     </nav>
   );
