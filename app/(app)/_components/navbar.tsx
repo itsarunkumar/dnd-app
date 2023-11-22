@@ -1,7 +1,9 @@
 import Link from "next/link";
 import React from "react";
-import { UserDropdown } from "./user-dropdown";
+
 import { BoardSelect } from "./board-select";
+import UserDropdown from "@/components/user-dropdown";
+
 import { allBoards } from "@/actions/board-actions/all-boards";
 
 async function AppNavbar() {

@@ -15,11 +15,11 @@ const boardSchema = z.object({
     }),
 });
 
-export async function createBoard(boardId: string) {
+export async function createBoard(boardName: string) {
   const session = await auth();
 
   const { board } = boardSchema.parse({
-    board: boardId,
+    board: boardName,
   });
 
   try {

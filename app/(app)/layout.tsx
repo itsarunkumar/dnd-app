@@ -1,10 +1,13 @@
 import React from "react";
-import AppNavbar from "./_components/navbar";
+
+import { Navbar } from "@/components/navbar";
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="h-full">
-      <AppNavbar />
+      {/* <AppNavbar /> */}
+
+      <Navbar />
 
       {children}
     </div>

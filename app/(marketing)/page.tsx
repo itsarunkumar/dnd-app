@@ -1,15 +1,8 @@
-import Link from "next/link";
-import localFont from "next/font/local";
-import { Poppins } from "next/font/google";
-import { Medal } from "lucide-react";
-
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-
 const MarketingPage = () => {
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center gap-5">
       <h1 className="text-5xl">Spaces</h1>
+      <p>spaces is an to manage tasks</p>
     </div>
   );
 };

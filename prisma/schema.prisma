@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -50,8 +49,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  Table Table[]
-  Board Board[]
+  tables Table[]
+  boards Board[]
 
   @@map("users")
 }
@@ -75,7 +74,8 @@ model Board {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId])
+  // @@index([userId])
+  @@map("boards")
 }
 
 model Table {
@@ -90,7 +90,8 @@ model Table {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([boardId])
+  // @@index([boardId])
+  @@map("tables")
 }
 
 model Card {
@@ -103,5 +104,6 @@ model Card {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([tableId])
+  // @@index([tableId])
+  @@map("cards")
 }
