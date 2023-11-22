@@ -26,5 +26,5 @@ export async function deleteBoard(data: FormData) {
     console.log("error in delete board", error);
   }
 
-  revalidatePath("/app");
+  revalidatePath("/board");
 }
